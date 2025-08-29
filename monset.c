@@ -17,40 +17,42 @@ int main () {
         SetManagedMode();
     }
     else {
-        printf("Invalid input...\n");
+        printf("\033[0;31mInvalid input...\033[0m\n");
     }
 }
 
 void SetMonitorMode () {
-    printf("Setting card to monitor mode...\n");
+    printf("\033[0;32mSetting card to monitor mode...\033[0m\n");
 
     system("sudo systemctl stop iwd");
-    printf("Process iwd stopped...\n");
+    system("systemctl status iwd | grep --color=always Active");
+    printf("\033[0;32mProcess iwd stopped...\033[0m\n");
     
-    system("sudo airmon-ng start");
-    printf("Monitor interface online...\n");
+    system("yes | head -n 1 | sudo airmon-ng start 2> /dev/null");
+    printf("\033[0;32mMonitor interface online...\033[0m\n");
     
-    system("ip link show wlan0mon");
-    printf("Monitor mode interface status...\n");
+    system("ip link show wlan0mon | grep --color=always state");
+    printf("\033[0;32mMonitor mode interface status...\033[0m\n");
     
-    system("iw dev wlan0mon info");
-    printf("Monitor mode set...\n");
+    system("iw dev wlan0mon info | grep --color=always type");
+    printf("\033[0;32mMonitor mode set...\033[0m\n");
 }
 
 void SetManagedMode() {
-    printf("Setting card to managed mode...\n");
+    printf("\033[0;32mSetting card to managed mode...\033[0m\n");
     
     system("sudo airmon-ng stop wlan0mon");
-    printf("Taking monitor mode interface offline...\n");
+    printf("\033[0;32mTaking monitor mode interface offline...\033[0m\n");
     
     system("sudo systemctl start iwd");
-    printf("Process iwd started...\n");
+    system("systemctl status iwd | grep --color=always Active");
+    printf("\033[0;32mProcess iwd started...\033[0m\n");
     
     sleep(1);
     
-    system("ip link show wlan0");
-    printf("wlan0 status...\n");
+    system("ip link show wlan0 | grep --color=always state");
+    printf("\033[0;32mwlan0 status...\033[0m\n");
     
-    system("iw dev wlan0 info");
-    printf("wlan0 mode set to managed...\n");
+    system("iw dev wlan0 info | grep --color=always type");
+    printf("\033[0;32mwlan0 mode set to managed...\033[0m\n");
 }
